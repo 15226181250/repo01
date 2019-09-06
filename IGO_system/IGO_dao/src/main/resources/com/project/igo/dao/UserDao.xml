@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.igo.dao.UserDao">
+
+    <resultMap id="user" type="User">
+        <id property="userId" column="uid" javaType="String"/>
+        <result property="password" column="password" javaType="String"/>
+        <result property="userName" column="uname" javaType="String"/>
+        <result property="phone" column="phone" javaType="String"/>
+        <result property="identity" column="identity" javaType="String"/>
+    </resultMap>
+
+
+    <insert id="insert" parameterType="User">
+        insert into user values(#{userId},#{password},#{userName},#{phone},#{identity})
+    </insert>
+
+    <update id="update" parameterType="User">
+        update user set uname=#{userName},password=#{password},phone=#{phone},identity=#{identity} where uid=#{userId}
+    </update>
+
+    <delete id="delete" parameterType="String">
+        delete from user where uid=#{userId}
+    </delete>
+
+    <select id="select" parameterType="String" resultMap="user">
+        select * from user where uid=#{userId}
+    </select>
+
+    <select id="selectAllUserVIP" resultMap="user">
+        select * from user where identity in('普通用户','至尊会员')
+    </select>
+
+
+    <select id="selectAllBusiness" resultMap="user">
+        select * from user where identity="商家"
+    </select>
+
+</mapper>

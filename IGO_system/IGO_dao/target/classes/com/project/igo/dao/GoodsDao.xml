@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.igo.dao.GoodsDao">
+
+    <resultMap id="goods" type="Goods">
+        <id property="goodsId" column="gid" javaType="String"/>
+        <result property="goodsName" column="gname" javaType="String"/>
+        <result property="goodsType" column="type" javaType="String"/>
+        <result property="goodsPrice" column="price" javaType="Double"/>
+        <result property="businessId" column="business_Id" javaType="String"/>
+        <result property="goodsPhoto" column="goodsphoto" javaType="String"/>
+        <result property="introduce" column="introduce" javaType="String"/>
+        <!--通过association可以查找到通过外键关联的对象-->
+        <!--property的值为实体类中成员变量的名字，column的值为数据库中外键字段的名称，javaType为实体类中的类型-->
+        <association property="user" column="business_id" javaType="User" >
+            <!--这里的dsn和dname是查询时起的别名-->
+            <result property="userName" column="una" javaType="String"/>
+            <result property="phone" column="up" javaType="String"/>
+        </association>
+    </resultMap>
+
+
+    <insert id="insert" parameterType="Goods">
+        insert into goods values(#{goodsId},#{goodsName},#{goodsType},#{goodsPrice},#{businessId},#{goodsPhoto},#{introduce})
+    </insert>
+
+    <update id="update" parameterType="Goods">
+        update goods set gname=#{goodsName},type=#{goodsType},price=#{goodsPrice},business_id=#{businessId},goodsphoto=#{goodsPhoto},introduce=#{introduce} where gid=#{goodsId}
+    </update>
+
+    <delete id="delete" parameterType="String">
+        delete from goods where gid=#{goodsId}
+    </delete>
+
+    <select id="select" parameterType="String" resultMap="goods">
+        select g.*,u.uname una,u.phone up from goods g left join user u on u.uid=g.business_id
+         where g.gid=#{goodsId}
+    </select>
+
+    <select id="selectAll" resultMap="goods">
+        select g.*,u.uname una,u.phone up from goods g left join user u on u.uid=g.business_id
+    </select>
+
+    <select id="selectByBusinessId" parameterType="String" resultMap="goods">
+        select g.*,u.uname una,u.phone up from goods g left join user u on u.uid=g.business_id
+         where g.business_id=#{userId}
+    </select>
+    <select id="selectByType" parameterType="String" resultMap="goods">
+        select g.*,u.uname una,u.phone up from goods g left join user u on u.uid=g.business_id
+         where g.type=#{goodsType}
+    </select>
+    <select id="selectByGoodsName" parameterType="String" resultMap="goods">
+        select g.*,u.uname una,u.phone up from goods g left join user u on u.uid=g.business_id
+         where g.gname=#{goodsName}
+    </select>
+</mapper>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.igo.dao.HandleDao">
+    <resultMap id="handle" type="Handle">
+        <id property="handleId" column="hid" javaType="int"/>
+        <result property="billId" column="bill_id" javaType="int"/>
+        <result property="businessId" column="business_id" javaType="String"/>
+        <result property="customId" column="custom_id" javaType="String"/>
+        <result property="handleTime" column="handle_time" javaType="java.util.Date"/>
+        <result property="post" column="post" javaType="String"/>
+        <association property="bill" column="billId" javaType="Bill">
+            <result property="bid" column="gdb" javaType="Integer"/>
+            <result property="goodsId" column="gdg" javaType="String"/>
+            <result property="totalPrice" column="gda" javaType="Double"/>
+            <result property="createTime" column="gdc" javaType="java.util.Date"/>
+            <result property="status" column="gds" javaType="String"/>
+            <result property="customId" column="gdcc" javaType="String"/>
+            <result property="businessId" column="gdbb" javaType="String"/>
+        </association>
+        <association property="custom" column="customId" javaType="User">
+            <!--column的值为字段名，要求不可以重复，所以值一般为SQL语句中自己起的字段名-->
+            <result property="userName" column="dname" javaType="String"/>
+            <result property="phone" column="dphoto" javaType="String"/>
+        </association>
+        <association property="business" column="businessId" javaType="User">
+            <result property="userName" column="cname" javaType="String"/>
+            <result property="phone" column="cphoto" javaType="String"/>
+        </association>
+    </resultMap>
+
+    <insert id="insert" parameterType="Handle" useGeneratedKeys="true" keyProperty="handleId">
+        insert into handle(bill_id,business_id,custom_id,handle_time,post)
+        values(#{billId},#{businessId},#{customId},#{handleTime},#{post})
+    </insert>
+    <select id="selectByBillId" resultMap="handle" parameterType="int">
+        select cv.*,gd.status gds,gd.gid gdg,gd.create_time gdc,gd.allprince gda,gd.bid gdb,gd.custom_id gdcc,gd.business_id gdbb,ce.uname cname,ce.phone cphoto,d.uname dname,d.phone dphoto
+        from handle cv
+        left join bill gd on gd.bid=cv.bill_id
+        left join user d on d.uid = cv.custom_id
+        left join user ce on ce.uid=cv.business_id
+        where cv.bill_id=#{billId} order by cv.handle_time desc
+    </select>
+    <select id="selectAll" resultMap="handle">
+        select cv.*,gd.status gds,gd.create_time gdc,gd.allprince gda,gd.bid gdb,gd.custom_id gdcc,gd.business_id gdbb,ce.uname cname,ce.phone cphoto,d.uname dname,d.phone dphoto
+        from handle cv
+        left join bill gd on gd.bid=cv.bill_id
+        left join user d on d.uid = cv.custom_id
+        left join user ce on ce.uid=cv.business_id
+        order by cv.handle_time desc
+    </select>
+</mapper>

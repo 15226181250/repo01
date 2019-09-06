@@ -1,0 +1,55 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd">
+    <!--开启自动扫描-->
+    <context:component-scan base-package="com.project.igo.dao"/>
+
+    <!--配置数据源，使用spring-jdbc包下自带的数据源-->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <!--配置驱动-->
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/igo?useUnicode=true&amp;characterEncoding=utf-8"/>
+        <property name="username" value="root"/>
+        <property name="password" value="mysql"/>
+    </bean>
+
+    <!--配置session工厂，使用mybaties-spring整合包提供的-->
+    <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 配置别名，调用实体类时不用调用实体类的全称，只调用类名即可-->
+        <property name="typeAliasesPackage" value="com.project.igo.entity"/>
+
+<!--=======================配置mybatis分页插件==========================-->
+        <property name="plugins">
+            <array>
+                <bean class="com.github.pagehelper.PageInterceptor">
+                    <property name="properties">
+                        <value>
+            <!--====helperDialect用来指定连接的数据库类型=====-->
+                            helperDialect=mysql
+                            reasonable=true
+                            supportMethodsArguments=true
+                            params=count=countSql
+                            autoRuntimeDialect=true
+                        </value>
+                    </property>
+                </bean>
+            </array>
+        </property>
+    </bean>
+
+
+
+    <!--配置映射器接口,配置后会自动扫描指定包(dao)下的所有接口，并将其和配置的映射文件关联起来生成持久化
+操作对象，并放到spring的IOC容器里，所以要求dao层的接口和写的映射文件都必须位于这个包下 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="sqlSessionFactoryBeanName" value="sessionFactory"/>
+        <property name="basePackage" value="com.project.igo.dao"/>
+    </bean>
+
+</beans>

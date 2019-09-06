@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.igo.dao.SessionDao">
+    <resultMap id="session" type="Session">
+        <id property="sid" column="sid" javaType="int"/>
+        <result property="customId" column="custom_id" javaType="String"/>
+        <result property="businessId" column="business_id" javaType="String"/>
+        <result property="createTime" column="create_time" javaType="java.util.Date"/>
+        <result property="content" column="content" javaType="String"/>
+        <!--通过association声明关联的对象-->
+        <association property="custom" column="customId" javaType="User">
+            <!--column的值为字段名，要求不可以重复，所以值一般为SQL语句中自己起的字段名-->
+            <result property="userName" column="dname" javaType="String"/>
+        </association>
+        <association property="business" column="businessId" javaType="User">
+            <result property="userName" column="cname" javaType="String"/>
+        </association>
+    </resultMap>
+    <!--由于报销单编号是让MySQL数据库自己去生成的，所以插入时，不插该字段-->
+    <!--useGeneratedKeys是用来打开自动生成主键的，keyProperty用来指定生成的逐渐放到那个属性里面 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="sid" parameterType="Session">
+        insert into session(custom_id,business_id,create_time,content)
+        values(#{customId},#{businessId},#{createTime},#{content})
+    </insert>
+    <delete id="deleteAll" parameterType="String">
+        delete from bill where custom_id=#{customId} and business_id=#{businessId}
+    </delete>
+    <select id="selectAllSession" resultMap="session" parameterType="String">
+        select cv.*,ce.uname cname,d.uname dname
+        from session cv
+        left join user d on d.uid = cv.custom_id
+        left join user ce on ce.uid=cv.business_id
+        where cv.custom_id=#{customId} and cv.business_id=#{businessId}
+    </select>
+</mapper>

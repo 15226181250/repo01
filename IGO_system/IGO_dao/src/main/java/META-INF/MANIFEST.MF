@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Class-Path: mybatis-spring-1.3.1.jar spring-context-4.0.2.RELEASE.jar 
+ spring-webmvc-4.0.2.RELEASE.jar spring-tx-4.0.2.RELEASE.jar mysql-con
+ nector-java-5.1.44.jar aspectjweaver-1.8.0.jar commons-logging-1.1.3.
+ jar aopalliance-1.0.jar spring-expression-4.0.2.RELEASE.jar javax.ser
+ vlet-api-4.0.0.jar spring-core-4.0.2.RELEASE.jar spring-jdbc-4.0.2.RE
+ LEASE.jar jstl-1.2.jar spring-aop-4.0.2.RELEASE.jar mybatis-3.4.4.jar
+  spring-web-4.0.2.RELEASE.jar spring-beans-4.0.2.RELEASE.jar
+Main-Class: 
+

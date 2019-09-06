@@ -1,0 +1,43 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/mvc
+    http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!--因为表现层依赖事务层，所以将biz层引入进来-->
+    <import resource="spring_biz.xml"/>
+    <!--开启自动扫描-->
+    <context:component-scan base-package="com.project.igo.controller"/>
+    <!--开启mvc注解器`-->
+    <mvc:annotation-driven/>
+
+    <!--设置静态资源交给servlet去处理,如一张图片-->
+    <mvc:default-servlet-handler/>
+
+    <!--======================配置视图转换器===========================-->
+    <!--至少指定以下三个属性-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!--指定视图转换器是按什么规律去转换的-->
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <!--配置前缀-->
+        <property name="prefix" value="/WEB-INF/pages/"/>
+        <!--配置后缀-->
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <!--===========================配置拦截器===================-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <!--指明你要拦截哪些路径，/**表明你要拦截所有路径-->
+            <mvc:mapping path="/**"/>
+            <!--指明你是用哪个对象来对拦截进行处理的-->
+            <bean class="com.project.igo.global.LoginInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+</beans>
